@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Primitive 3D Modeler</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;background:#10131a;color:#fff;overflow:hidden}.app{width:100vw;height:100vh;display:grid;grid-template-columns:minmax(0,1fr) 340px}.viewport{order:1;position:relative;min-width:0}.sidebar{order:2;background:linear-gradient(180deg,#171b25,#10131a);border-left:1px solid rgba(255,255,255,.1);padding:18px;overflow-y:auto;z-index:50;scrollbar-width:thin;min-width:340px}.brand{margin-bottom:20px}.brand h1{margin:0;font-size:24px;letter-spacing:-.5px}.brand p{margin:8px 0 0;color:#9ea7b8;line-height:1.4;font-size:14px}.panel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:14px;margin-bottom:14px;box-shadow:0 14px 40px rgba(0,0,0,.18)}.panel h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#b7c0d1;margin:0 0 12px}.panel-title-row{display:flex;align-items:center;gap:8px}.big-collapse-btn,.panel-collapse-btn{transition:transform .15s ease,background .15s ease;border:0;background:rgba(255,255,255,.08);color:#d7ddec;cursor:pointer;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:18px;line-height:1}.big-collapse-btn:hover,.panel-collapse-btn:hover{background:rgba(255,255,255,.16)}.big-collapse-btn.collapsed,.panel-collapse-btn.collapsed{transform:rotate(-90deg)}.panel-body{margin-top:6px}.panel-body.collapsed{display:none}.subsection-label{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#aeb8cb;margin:6px 0 10px}.subsection-label + .primitive-grid,.subsection-label + .degree-grid,.subsection-label + .control{margin-top:0}.property-header{display:flex;align-items:center;gap:8px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.08);color:#d7ddec;font-size:13px}.collection-toggle{border:0;background:transparent;color:#d7ddec;cursor:pointer;padding:0;width:14px;height:14px;display:grid;place-items:center;font-size:12px}.collection-toggle.collapsed{transform:rotate(-90deg)}.prop-icon{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;background:#303744;color:#fff;font-size:12px}.object-list{margin-top:8px;display:flex;flex-direction:column;gap:3px;max-height:220px;overflow:auto;scrollbar-width:thin}.object-list.collapsed{display:none}.object-row{display:grid;grid-template-columns:20px 1fr 28px 28px;align-items:center;gap:6px;padding:7px 6px;border-radius:9px;color:#d8deec;font-size:13px;cursor:pointer}.object-row:hover{background:rgba(255,255,255,.08)}.object-row.active{background:#31558f;color:#fff}.object-row .shape-mark{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;background:rgba(255,138,0,.18);color:#ffae42;border:1px solid rgba(255,174,66,.5);font-size:11px}.object-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.prop-mini-btn{border:0;background:transparent;color:#d8deec;cursor:pointer;border-radius:6px;height:24px;display:grid;place-items:center}.prop-mini-btn:hover{background:rgba(255,255,255,.14)}.prop-mini-btn.locked{color:#ffb35a}.property-empty{font-size:12px;color:#8f99ac;padding:10px 6px}.object-row.hidden-object{opacity:.45}.object-row.locked-object .object-name::after{content:' 🔒';font-size:11px;color:#ffb35a}.primitive-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}button,select,input{font:inherit}.btn{border:0;border-radius:13px;padding:11px 10px;cursor:pointer;color:#fff;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.09);transition:transform .15s ease,background .15s ease,border .15s ease}.btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2)}.btn.primary{background:linear-gradient(135deg,#5f7cff,#8d5cff);border-color:transparent}.btn.danger{background:rgba(255,80,80,.12);border-color:rgba(255,80,80,.25);color:#ffb3b3}.full{width:100%;margin-top:9px}.control{margin-bottom:12px}.control label{display:flex;justify-content:space-between;align-items:center;color:#c5ccda;font-size:13px;margin-bottom:7px}.control input[type=range]{width:100%;accent-color:#7b6cff}.control input[type=color]{width:100%;height:42px;border:0;border-radius:12px;background:transparent;cursor:pointer}.control input[type=number],.control select{width:100%;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:#111520;color:#fff;padding:10px;outline:none}.degree-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.hint{color:#8f99ac;font-size:12px;line-height:1.45;margin:0}canvas{display:block}.undo-corner{position:absolute;top:18px;left:18px;z-index:10;display:flex;gap:8px}.undo-btn{border:1px solid rgba(255,255,255,.1);background:rgba(15,18,26,.85);backdrop-filter:blur(14px);color:#fff;border-radius:999px;width:42px;height:42px;font-size:20px;cursor:pointer}.undo-btn:hover{background:rgba(255,255,255,.15)}.transform-toolbar{position:absolute;top:70px;left:18px;z-index:999;display:flex;flex-direction:column;gap:4px;padding:8px;background:rgba(25,29,38,.96);border:1px solid rgba(255,255,255,.08);border-radius:10px;box-shadow:0 16px 35px rgba(0,0,0,.28);backdrop-filter:blur(10px)}.tool-btn{width:42px;height:42px;border:0;border-radius:8px;background:#252a34;color:#fff;display:grid;place-items:center;cursor:pointer;transition:background .15s ease,transform .15s ease}.tool-btn:hover{background:#313847;transform:translateY(-1px)}.tool-btn.active{background:#5f7cff}.tool-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.toolbar-separator{height:1px;background:rgba(255,255,255,.14);margin:5px 4px}.toolbar-label{font-size:9px;letter-spacing:.8px;color:#9ea7b8;text-align:center;margin:1px 0 3px;text-transform:uppercase;font-weight:700}.snap-toggle-btn{width:42px;height:42px;border:0;border-radius:8px;background:#252a34;color:#ffffff;display:grid;place-items:center;cursor:pointer;transition:background .15s ease,transform .15s ease;position:relative}.snap-toggle-btn:hover{background:#313847;transform:translateY(-1px)}.snap-toggle-btn.active{background:#ff8a00;color:#10131a;font-weight:800}.snap-toggle-btn .snap-mini-label{position:absolute;bottom:3px;left:0;right:0;font-size:8px;line-height:1;text-transform:uppercase;letter-spacing:.6px}.snap-tools-group{display:flex;flex-direction:column;gap:4px}.snap-tools-group.collapsed{display:none}.snap-tool-btn.active{background:#ff8a00;color:#10131a;font-weight:800}.snap-tool-btn span{font-size:16px;line-height:1}.snap-tool-btn svg circle,.snap-tool-btn svg rect{fill:currentColor;stroke:currentColor}.viewport-labels{position:absolute;top:392px;left:18px;z-index:6;pointer-events:none;font-size:13px;line-height:1.35;color:#f2f2f2;text-shadow:0 1px 3px rgba(0,0,0,.75);font-weight:700}.axis-gizmo{position:absolute;left:18px;bottom:18px;width:132px;height:100px;z-index:6;pointer-events:auto;opacity:.96}.axis-line{position:absolute;height:2px;transform-origin:left center;border-radius:999px}.axis-line.x{background:#ff3355}.axis-line.y{background:#8ddd18}.axis-line.z{background:#2992ff}.axis-dot{position:absolute;width:20px;height:20px;border-radius:999px;display:grid;place-items:center;font-size:12px;font-weight:900;color:#10131a;border:2px solid currentColor;background:currentColor;box-shadow:0 4px 14px rgba(0,0,0,.35);cursor:pointer;pointer-events:auto;user-select:none}.axis-dot:hover{transform:scale(1.15)}.axis-dot span{color:#10131a}.axis-dot.x{color:#ff3355}.axis-dot.y{color:#8ddd18}.axis-dot.z{color:#2992ff}.axis-dot.neg{background:transparent;opacity:.75}.axis-dot.neg span{display:none}.topbar{position:absolute;top:18px;left:70px;right:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;pointer-events:none;z-index:5}.floating-scene-info{position:absolute;top:84px;left:96px;z-index:8;pointer-events:none;color:#ffffff;font-size:12px;font-weight:700;opacity:.98;text-shadow:0 1px 2px rgba(0,0,0,.55)}.status{pointer-events:auto;background:rgba(15,18,26,.78);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:10px 14px;color:#d7ddec;font-size:13px}.floating-actions{pointer-events:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.small-btn{border:1px solid rgba(255,255,255,.1);background:rgba(15,18,26,.78);backdrop-filter:blur(14px);color:#fff;border-radius:999px;padding:10px 13px;cursor:pointer}.selected-name{color:#fff;font-weight:700}.status-with-modes{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.mode-divider{width:1px;height:18px;background:rgba(255,255,255,.18);display:inline-block}.mode-pill{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);color:#d7ddec;border-radius:999px;padding:5px 9px;font-size:12px;cursor:pointer}.mode-pill:hover{background:rgba(255,255,255,.16)}.mode-pill.active{background:#ff8a00;border-color:#ffb35a;color:#10131a;font-weight:700}@media(max-width:820px){body{overflow:auto}.app{min-height:100vh;height:auto;grid-template-columns:1fr}.sidebar{order:1;border-left:0;border-bottom:1px solid rgba(255,255,255,.1);max-height:none}.viewport{order:2;height:72vh}.undo-corner{top:10px;left:10px}.transform-toolbar{top:60px;left:10px}.topbar{top:10px;left:62px;right:10px;align-items:flex-start;flex-direction:column}.viewport-labels{top:104px;left:70px}}
+</style>
+</head>
+<body>
+<div class="app">
+<main class="viewport" id="viewport">
+<select id="editModeSelect" style="display:none"><option value="object">Object</option><option value="vertex">Vertex</option><option value="segment">Segment</option><option value="face">Face</option></select>
+
+<div class="undo-corner"><button class="undo-btn" id="undoBtn" title="Undo">↶</button></div>
+
+<div class="transform-toolbar" id="transformToolbar">
+  <button class="tool-btn active" id="moveToolBtn" title="Move"><svg viewBox="0 0 24 24"><path d="M12 2v20"></path><path d="M12 2l-2.5 2.5"></path><path d="M12 2l2.5 2.5"></path><path d="M12 22l-2.5-2.5"></path><path d="M12 22l2.5-2.5"></path><path d="M2 12h20"></path><path d="M2 12l2.5-2.5"></path><path d="M2 12l2.5 2.5"></path><path d="M22 12l-2.5-2.5"></path><path d="M22 12l-2.5 2.5"></path></svg></button>
+  <button class="tool-btn" id="rotateToolBtn" title="Rotate"><svg viewBox="0 0 24 24"><path d="M19 8a8 8 0 1 0 1 9"></path><path d="M19 8V3"></path><path d="M19 8h-5"></path><path d="M5 16a8 8 0 0 0 14 0"></path></svg></button>
+  <button class="tool-btn" id="scaleToolBtn" title="Scale"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="10" height="10"></rect><path d="M15 9l4-4"></path><path d="M16 5h3v3"></path><path d="M15 15l4-4"></path></svg></button>
+  <button class="tool-btn" id="selectOnlyBtn" title="Select only"><svg viewBox="0 0 24 24"><path d="M4 4l7 16 2.5-6.5L20 11 4 4z"></path></svg></button>
+  <div class="toolbar-separator"></div>
+  <button class="snap-toggle-btn active" id="snapToggleBtn" title="Expand or collapse snap menu">
+    <svg viewBox="0 0 24 24" aria-hidden="true" style="width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M8 4h3v7a3 3 0 0 0 6 0V4h3v7a6 6 0 0 1-12 0V4z"></path></svg>
+    <span class="snap-mini-label">Snap</span>
+  </button>
+  <div class="snap-tools-group" id="snapToolsGroup">
+    <button class="tool-btn snap-tool-btn active" id="snapOffToolBtn" title="Snap off"><svg viewBox="0 0 24 24"><path d="M8 4h3v7a3 3 0 0 0 6 0V4h3v7a6 6 0 0 1-12 0V4z"></path><path d="M6 19L19 6"></path></svg></button>
+    <button class="tool-btn snap-tool-btn" id="snapVertexToolBtn" title="Snap to vertex"><svg viewBox="0 0 24 24"><path d="M8 4h3v7a3 3 0 0 0 6 0V4h3v7a6 6 0 0 1-12 0V4z"></path><circle cx="12" cy="18" r="2"></circle></svg></button>
+    <button class="tool-btn snap-tool-btn" id="snapSegmentToolBtn" title="Snap to edge / segment"><svg viewBox="0 0 24 24"><path d="M8 4h3v7a3 3 0 0 0 6 0V4h3v7a6 6 0 0 1-12 0V4z"></path><path d="M6 18h12"></path></svg></button>
+    <button class="tool-btn snap-tool-btn" id="snapFaceToolBtn" title="Snap to face"><svg viewBox="0 0 24 24"><path d="M8 4h3v7a3 3 0 0 0 6 0V4h3v7a6 6 0 0 1-12 0V4z"></path><rect x="8" y="16" width="8" height="4" rx="1"></rect></svg></button>
+  </div>
+</div>
+
+<div class="axis-gizmo"><div class="axis-line x"></div><div class="axis-line y"></div><div class="axis-line z"></div><div class="axis-dot x" data-axis-view="x"><span>X</span></div><div class="axis-dot y" data-axis-view="y"><span>Y</span></div><div class="axis-dot z" data-axis-view="z"><span>Z</span></div><div class="axis-dot neg x" data-axis-view="-x"><span></span></div><div class="axis-dot neg y" data-axis-view="-y"><span></span></div><div class="axis-dot neg z" data-axis-view="-z"><span></span></div></div>
+
+<div class="topbar"><div class="status status-with-modes">Selected: <span class="selected-name" id="selectedName">None</span><span class="mode-divider"></span><button class="mode-pill active" data-top-edit-mode="object">Object</button><button class="mode-pill" data-top-edit-mode="vertex">Vertex</button><button class="mode-pill" data-top-edit-mode="segment">Segment</button><button class="mode-pill" data-top-edit-mode="face">Face</button></div><div class="floating-actions"><button class="small-btn" id="viewFront">Front</button><button class="small-btn" id="viewTop">Top</button><button class="small-btn" id="viewIso">Iso</button><button class="small-btn" id="fitViewBtn">Fit</button></div></div>
+
+<div id="viewName" style="display:none">User Perspective</div>
+<div class="floating-scene-info" id="sceneInfo">(0) Objects | None</div>
+</main>
+<aside class="sidebar">
+
+<div id="hiddenSnapControls" style="display:none">
+  <select id="snapModeSelect">
+    <option value="off">Off</option>
+    <option value="vertex">Vertex</option>
+    <option value="segment">Segment</option>
+    <option value="face">Face</option>
+  </select>
+  <input type="range" id="snapDistanceSlider" min="0.05" max="2" step="0.05" value="0.4" />
+  <span id="snapDistanceValue">0.40</span>
+</div>
+
+<div class="brand"><h1>Primitive Studio</h1><p>Create quick 3D scenes with basic shapes. Z is the height axis. Move, Rotate, Scale are on the left toolbar. The bottom cursor tool is select-only.</p></div>
+
+<section class="panel">
+  <h2 class="panel-title-row"><button class="big-collapse-btn" id="collectionToggle" title="Collapse / expand">⌄</button><span>Properties</span></h2>
+  <div class="panel-body" id="propertiesBody">
+    <div class="property-header"><button class="prop-mini-btn" id="toggleAllVisibilityBtn" title="Show / Hide all" style="margin-left:auto">👁</button></div>
+    <div class="object-list" id="objectList"><div class="property-empty">No objects</div></div>
+  </div>
+</section>
+
+
+
+<section class="panel">
+  <h2 class="panel-title-row"><button class="panel-collapse-btn" data-collapse-target="objectsBody" title="Collapse / expand">⌄</button><span>Objects</span></h2>
+  <div class="panel-body" id="objectsBody">
+    <div class="subsection-label">Selected object</div>
+    <div class="control"><label>Color</label><input type="color" id="colorPicker" value="#6d7cff"></div>
+    <div class="control"><label>Material</label><select id="materialSelect"><option value="standard">Soft matte</option><option value="metal">Metal</option><option value="glass">Glass</option><option value="wireframe">Wireframe</option></select></div>
+    <div class="control"><label>Size <span id="sizeValue">1.00</span></label><input type="range" id="sizeSlider" min="0.2" max="4" step="0.05" value="1"></div>
+    <button class="btn full" id="duplicateObject">Duplicate selected</button>
+
+    <div class="subsection-label" style="margin-top:16px">Add object</div>
+    <div class="primitive-grid">
+      <button class="btn" data-shape="cube">Cube</button>
+      <button class="btn" data-shape="sphere">Sphere</button>
+      <button class="btn" data-shape="cone">Cone</button>
+      <button class="btn" data-shape="cylinder">Cylinder</button>
+      <button class="btn" data-shape="plane">Plane</button>
+      <button class="btn" data-shape="torus">Torus</button>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="panel">
+  <h2 class="panel-title-row"><button class="panel-collapse-btn" data-collapse-target="transformBody" title="Collapse / expand">⌄</button><span>Transform &amp; Rotation</span></h2>
+  <div class="panel-body" id="transformBody">
+    <div class="subsection-label">Transform mode</div>
+    <div class="primitive-grid">
+      <button class="btn primary" id="moveMode">Move</button>
+      <button class="btn" id="rotateMode">Rotate</button>
+      <button class="btn" id="scaleMode">Scale</button>
+      <button class="btn danger" id="deleteObject">Delete</button>
+    </div>
+
+    <div class="subsection-label" style="margin-top:16px">Rotation °</div>
+    <div class="degree-grid">
+      <div class="control"><label>X°</label><input type="number" id="rotX" value="0" step="1"></div>
+      <div class="control"><label>Y°</label><input type="number" id="rotY" value="0" step="1"></div>
+      <div class="control"><label>Z°</label><input type="number" id="rotZ" value="0" step="1"></div>
+    </div>
+    <button class="btn full" id="applyRotationBtn">Apply rotation</button>
+    <button class="btn full" id="resetRotationBtn">Reset rotation</button>
+    <p class="hint" style="margin-top:10px;">Type exact degrees for the selected object.</p>
+  </div>
+</section>
+
+<section class="panel">
+  <h2 class="panel-title-row"><button class="panel-collapse-btn" data-collapse-target="sceneBody" title="Collapse / expand">⌄</button><span>Scene</span></h2>
+  <div class="panel-body" id="sceneBody">
+    <button class="btn full" id="exportScene">Export scene JSON</button>
+    <button class="btn full" id="exportObjBtn">Export scene OBJ</button>
+    <button class="btn full" id="exportStlBtn">Export scene STL</button>
+    <button class="btn full" id="importObjStlBtn">Import OBJ / STL</button>
+    <input type="file" id="importObjStlInput" accept=".obj,.stl" style="display:none" />
+    <button class="btn danger full" id="clearScene">Clear scene</button>
+    <p class="hint" style="margin-top:10px;">This is front-end only. Everything runs in the browser.</p>
+  </div>
+</section>
+</aside>
+</div>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+import { STLExporter } from 'three/addons/exporters/STLExporter.js';
+const $=id=>document.getElementById(id);
+const viewport=$('viewport'),selectedName=$('selectedName'),sceneInfo=$('sceneInfo'),viewName=$('viewName'),colorPicker=$('colorPicker'),materialSelect=$('materialSelect'),sizeSlider=$('sizeSlider'),sizeValue=$('sizeValue'),snapModeSelect=$('snapModeSelect'),snapDistanceSlider=$('snapDistanceSlider'),snapDistanceValue=$('snapDistanceValue'),undoBtn=$('undoBtn'),objectList=$('objectList'),collectionToggle=$('collectionToggle'),toggleAllVisibilityBtn=$('toggleAllVisibilityBtn'),propertiesBody=$('propertiesBody');let editModeSelect=$('editModeSelect');
+const moveModeBtn=$('moveMode'),rotateModeBtn=$('rotateMode'),scaleModeBtn=$('scaleMode'),deleteObjectBtn=$('deleteObject'),duplicateObjectBtn=$('duplicateObject'),clearSceneBtn=$('clearScene'),exportSceneBtn=$('exportScene'),exportObjBtn=$('exportObjBtn'),exportStlBtn=$('exportStlBtn'),importObjStlBtn=$('importObjStlBtn'),importObjStlInput=$('importObjStlInput'),viewFrontBtn=$('viewFront'),viewTopBtn=$('viewTop'),viewIsoBtn=$('viewIso'),fitViewBtn=$('fitViewBtn');
+const moveToolBtn=$('moveToolBtn'),rotateToolBtn=$('rotateToolBtn'),scaleToolBtn=$('scaleToolBtn'),selectOnlyBtn=$('selectOnlyBtn'),snapToggleBtn=$('snapToggleBtn'),snapToolsGroup=$('snapToolsGroup'),snapOffToolBtn=$('snapOffToolBtn'),snapVertexToolBtn=$('snapVertexToolBtn'),snapSegmentToolBtn=$('snapSegmentToolBtn'),snapFaceToolBtn=$('snapFaceToolBtn'),rotX=$('rotX'),rotY=$('rotY'),rotZ=$('rotZ'),applyRotationBtn=$('applyRotationBtn'),resetRotationBtn=$('resetRotationBtn');
+if(!editModeSelect){const s=document.createElement('select');s.id='editModeSelect';s.style.display='none';s.innerHTML='<option value="object">Object</option><option value="vertex">Vertex</option><option value="segment">Segment</option><option value="face">Face</option>';document.body.appendChild(s);editModeSelect=s}
+const topEditModeButtons=[...document.querySelectorAll('[data-top-edit-mode]')];
+const axisGizmo=document.querySelector('.axis-gizmo');
+const axisDots={x:document.querySelector('.axis-dot.x:not(.neg)'),y:document.querySelector('.axis-dot.y:not(.neg)'),z:document.querySelector('.axis-dot.z:not(.neg)'),nx:document.querySelector('.axis-dot.neg.x'),ny:document.querySelector('.axis-dot.neg.y'),nz:document.querySelector('.axis-dot.neg.z')};
+const axisLines={x:document.querySelector('.axis-line.x'),y:document.querySelector('.axis-line.y'),z:document.querySelector('.axis-line.z')};
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x10131a);
+const camera=new THREE.PerspectiveCamera(55,viewport.clientWidth/viewport.clientHeight,.1,1000);camera.up.set(0,0,1);camera.position.set(6,-7,5);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));renderer.setSize(viewport.clientWidth,viewport.clientHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;viewport.appendChild(renderer.domElement);
+const orbit=new OrbitControls(camera,renderer.domElement);orbit.enableDamping=true;orbit.dampingFactor=.08;orbit.target.set(0,0,.7);orbit.update();
+const transform=new TransformControls(camera,renderer.domElement);transform.setMode('translate');scene.add(transform);
+const grid=new THREE.GridHelper(24,24,0x394150,0x252b36);grid.rotation.x=Math.PI/2;scene.add(grid);
+const ambient=new THREE.HemisphereLight(0xffffff,0x313747,2.4);scene.add(ambient);const keyLight=new THREE.DirectionalLight(0xffffff,2.6);keyLight.position.set(5,-4,8);keyLight.castShadow=true;keyLight.shadow.mapSize.set(2048,2048);scene.add(keyLight);const fillLight=new THREE.PointLight(0x7d8cff,20,20);fillLight.position.set(-4,5,3);scene.add(fillLight);
+const objects=[];let selected=null,objectCounter=1,historyStack=[],isRestoring=false,transformHistoryLocked=false,currentMode='translate',collectionCollapsed=false;
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2(),selectedBox=new THREE.Box3(),selectedSize=new THREE.Vector3(),selectedCenter=new THREE.Vector3(),targetBox=new THREE.Box3();
+const degToRad=v=>{const n=Number(v);return THREE.MathUtils.degToRad(Number.isFinite(n)?n:0)};const radToDeg=v=>Number(THREE.MathUtils.radToDeg(v).toFixed(1));
+function createMaterial(color='#6d7cff',type='standard'){if(type==='metal')return new THREE.MeshStandardMaterial({color,metalness:.85,roughness:.25});if(type==='glass')return new THREE.MeshPhysicalMaterial({color,metalness:0,roughness:.05,transmission:.35,transparent:true,opacity:.55});if(type==='wireframe')return new THREE.MeshStandardMaterial({color,wireframe:true});return new THREE.MeshStandardMaterial({color,metalness:.1,roughness:.58})}
+function geometryFor(shape){let g;switch(shape){case'cube':g=new THREE.BoxGeometry(1.4,1.4,1.4);break;case'sphere':g=new THREE.SphereGeometry(.85,48,32);break;case'cone':g=new THREE.ConeGeometry(.85,1.8,48);g.rotateX(Math.PI/2);break;case'cylinder':g=new THREE.CylinderGeometry(.75,.75,1.7,48);g.rotateX(Math.PI/2);break;case'plane':g=new THREE.BoxGeometry(2.2,2.2,.06);break;case'torus':g=new THREE.TorusGeometry(.75,.23,24,72);break;default:g=new THREE.BoxGeometry(1,1,1)}return g}
+function prettifyShape(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function snapshotScene(){return objects.map(o=>({name:o.userData.name,shape:o.userData.shape,color:o.userData.color,materialType:o.userData.materialType,position:o.position.toArray(),rotation:[o.rotation.x,o.rotation.y,o.rotation.z],scale:o.scale.toArray(),visible:o.visible,locked:!!o.userData.locked}))}
+function pushHistory(){if(isRestoring)return;historyStack.push(snapshotScene());if(historyStack.length>60)historyStack.shift()}
+function objectLocked(obj){return !!(obj&&obj.userData&&obj.userData.locked)}
+function allObjectsVisible(){return objects.length>0&&objects.every(o=>o.visible)}
+function updateRotationInputs(){if(!selected){rotX.value=0;rotY.value=0;rotZ.value=0;return}rotX.value=radToDeg(selected.rotation.x);rotY.value=radToDeg(selected.rotation.y);rotZ.value=radToDeg(selected.rotation.z)}
+function updateSceneInfo(){sceneInfo.textContent=`(${objects.length}) Objects | ${selected?selected.userData.name:'None'}`}
+function clearSelectionAura(obj){if(!obj||!obj.userData.__selectionAura)return;const aura=obj.userData.__selectionAura;obj.remove(aura);aura.traverse(n=>{if(n.geometry&&n.geometry!==obj.geometry)try{n.geometry.dispose()}catch(e){};if(n.material)try{n.material.dispose()}catch(e){}});delete obj.userData.__selectionAura}
+function applySelectionAura(obj){if(!obj)return;clearSelectionAura(obj);const aura=new THREE.Group();const shell=new THREE.Mesh(obj.geometry,new THREE.MeshBasicMaterial({color:0xff8a00,transparent:true,opacity:.16,side:THREE.BackSide,depthWrite:false}));shell.scale.setScalar(1.08);shell.renderOrder=999;aura.add(shell);const edges=new THREE.LineSegments(new THREE.EdgesGeometry(obj.geometry),new THREE.LineBasicMaterial({color:0xffa133,transparent:true,opacity:.95,depthWrite:false}));edges.scale.setScalar(1.085);edges.renderOrder=1000;aura.add(edges);obj.add(aura);obj.userData.__selectionAura=aura}
+function clearEditOverlay(obj){if(!obj||!obj.userData.__editOverlay)return;const overlay=obj.userData.__editOverlay;obj.remove(overlay);overlay.traverse(n=>{if(n.geometry&&n.geometry!==obj.geometry)try{n.geometry.dispose()}catch(e){};if(n.material)try{n.material.dispose()}catch(e){}});delete obj.userData.__editOverlay}
+function uniqueGeometryPoints(geometry){const pos=geometry.attributes.position;const seen=new Set();const pts=[];for(let i=0;i<pos.count;i++){const x=Number(pos.getX(i).toFixed(4)),y=Number(pos.getY(i).toFixed(4)),z=Number(pos.getZ(i).toFixed(4));const key=`${x},${y},${z}`;if(!seen.has(key)){seen.add(key);pts.push(new THREE.Vector3(x,y,z))}}return pts}
+function applyEditOverlay(obj){if(!obj)return;clearEditOverlay(obj);const mode=editModeSelect.value;if(mode==='object')return;const overlay=new THREE.Group();overlay.renderOrder=1200;if(mode==='face'){const faces=new THREE.Mesh(obj.geometry,new THREE.MeshBasicMaterial({color:0xff8a00,transparent:true,opacity:.38,side:THREE.DoubleSide,depthWrite:false}));faces.scale.setScalar(1.012);faces.renderOrder=1200;overlay.add(faces);const faceEdges=new THREE.LineSegments(new THREE.EdgesGeometry(obj.geometry),new THREE.LineBasicMaterial({color:0xffb000,transparent:true,opacity:1,depthWrite:false}));faceEdges.scale.setScalar(1.018);faceEdges.renderOrder=1201;overlay.add(faceEdges)}else if(mode==='segment'){const edges=new THREE.LineSegments(new THREE.EdgesGeometry(obj.geometry),new THREE.LineBasicMaterial({color:0xff9d00,transparent:true,opacity:1,depthWrite:false}));edges.scale.setScalar(1.02);edges.renderOrder=1200;overlay.add(edges)}else if(mode==='vertex'){const mat=new THREE.MeshBasicMaterial({color:0xff9d00,depthWrite:false});uniqueGeometryPoints(obj.geometry).forEach(p=>{const dot=new THREE.Mesh(new THREE.SphereGeometry(.055,12,8),mat.clone());dot.position.copy(p);dot.renderOrder=1200;overlay.add(dot)});const edges=new THREE.LineSegments(new THREE.EdgesGeometry(obj.geometry),new THREE.LineBasicMaterial({color:0xff9d00,transparent:true,opacity:.45,depthWrite:false}));edges.scale.setScalar(1.01);overlay.add(edges)}obj.add(overlay);obj.userData.__editOverlay=overlay}
+function refreshSelectionVisuals(){if(!selected)return;if(editModeSelect.value==='object'){clearEditOverlay(selected);applySelectionAura(selected)}else{clearSelectionAura(selected);applyEditOverlay(selected)}}
+function updateTopEditButtons(){topEditModeButtons.forEach(btn=>btn.classList.toggle('active',btn.dataset.topEditMode===editModeSelect.value))}
+function updateSnapToolButtons(){const mode=snapModeSelect.value;[[snapOffToolBtn,'off'],[snapVertexToolBtn,'vertex'],[snapSegmentToolBtn,'segment'],[snapFaceToolBtn,'face']].forEach(([btn,value])=>{if(btn)btn.classList.toggle('active',mode===value)});if(snapToggleBtn)snapToggleBtn.classList.toggle('active',mode!=='off')}
+function toggleSnapMenu(){if(!snapToolsGroup||!snapToggleBtn)return;snapToolsGroup.classList.toggle('collapsed');snapToggleBtn.title=snapToolsGroup.classList.contains('collapsed')?'Expand snap menu':'Collapse snap menu'}
+function updateObjectList(){if(!objectList)return;objectList.classList.toggle('collapsed',collectionCollapsed);if(collectionToggle)collectionToggle.classList.toggle('collapsed',collectionCollapsed);if(propertiesBody)propertiesBody.classList.toggle('collapsed',collectionCollapsed);if(toggleAllVisibilityBtn){toggleAllVisibilityBtn.textContent=allObjectsVisible()?'👁':'—';toggleAllVisibilityBtn.title=allObjectsVisible()?'Hide all':'Show all'}if(!objects.length){objectList.innerHTML='<div class="property-empty">No objects</div>';return}objectList.innerHTML=objects.map((obj,i)=>`<div class="object-row ${obj===selected?'active':''} ${obj.visible?'':'hidden-object'} ${objectLocked(obj)?'locked-object':''}" data-object-index="${i}"><span class="shape-mark">${obj.userData.shape==='cube'?'▾':obj.userData.shape==='sphere'?'●':obj.userData.shape==='cone'?'▲':obj.userData.shape==='cylinder'?'◼':obj.userData.shape==='plane'?'▭':obj.userData.shape==='imported'?'◆':'◎'}</span><span class="object-name">${obj.userData.name}</span><button class="prop-mini-btn" data-object-action="visible" title="Show / Hide">${obj.visible?'👁':'—'}</button><button class="prop-mini-btn ${objectLocked(obj)?'locked':''}" data-object-action="lock" title="Lock / Unlock">${objectLocked(obj)?'🔒':'🔓'}</button></div>`).join('')}
+function updateSelectionUI(){selectedName.textContent=selected?selected.userData.name:'None';if(selected){colorPicker.value=`#${selected.material.color.getHexString()}`;materialSelect.value=selected.userData.materialType||'standard';sizeSlider.value=selected.scale.x.toFixed(2);sizeValue.textContent=Number(sizeSlider.value).toFixed(2)}updateTopEditButtons();updateRotationInputs();updateSceneInfo();updateObjectList()}
+function selectObject(mesh){if(selected&&selected!==mesh){clearSelectionAura(selected);clearEditOverlay(selected)}selected=mesh;if(selected){refreshSelectionVisuals();if(currentMode!=='select'&&!objectLocked(selected)&&selected.visible)transform.attach(selected);else transform.detach()}else transform.detach();updateSelectionUI()}
+function clearSceneWithoutHistory(){transform.detach();objects.forEach(o=>{scene.remove(o);o.geometry.dispose();o.material.dispose()});objects.length=0;selected=null;updateSelectionUI()}
+function rebuildSceneFromSnapshot(snap){isRestoring=true;clearSceneWithoutHistory();snap.forEach(item=>{const m=new THREE.Mesh(geometryFor(item.shape),createMaterial(item.color,item.materialType));m.castShadow=true;m.receiveShadow=true;m.position.fromArray(item.position);m.rotation.set(item.rotation[0],item.rotation[1],item.rotation[2]);m.scale.fromArray(item.scale);m.userData={shape:item.shape,name:item.name,color:item.color,materialType:item.materialType,locked:!!item.locked};m.visible=item.visible!==false;scene.add(m);objects.push(m)});selectObject(null);isRestoring=false}
+function undoLastAction(){if(!historyStack.length)return;rebuildSceneFromSnapshot(historyStack.pop())}
+function addPrimitive(shape,save=true){if(save)pushHistory();const m=new THREE.Mesh(geometryFor(shape),createMaterial(colorPicker.value,materialSelect.value));m.castShadow=true;m.receiveShadow=true;m.position.set((Math.random()-.5)*3,(Math.random()-.5)*3,shape==='plane'?.03:.8);m.userData={shape,name:`${prettifyShape(shape)} ${objectCounter++}`,color:colorPicker.value,materialType:materialSelect.value,locked:false};scene.add(m);objects.push(m);selectObject(m)}
+function registerImportedMesh(mesh,name='Imported object'){mesh.castShadow=true;mesh.receiveShadow=true;if(!mesh.material||Array.isArray(mesh.material)){mesh.material=createMaterial(colorPicker.value,materialSelect.value)}normalizeImportedMesh(mesh);mesh.userData={shape:'imported',name:`${name} ${objectCounter++}`,color:colorPicker.value,materialType:materialSelect.value,locked:false};scene.add(mesh);objects.push(mesh);selectObject(mesh);fitCameraToSelection()}
+function updateSelectedMaterial(){if(!selected)return;if(objectLocked(selected)){colorPicker.value=`#${selected.material.color.getHexString()}`;materialSelect.value=selected.userData.materialType||'standard';return}pushHistory();selected.material.dispose();selected.material=createMaterial(colorPicker.value,materialSelect.value);selected.userData.color=colorPicker.value;selected.userData.materialType=materialSelect.value}
+function setMode(mode){currentMode=mode;[moveModeBtn,rotateModeBtn,scaleModeBtn].forEach(b=>b.classList.remove('primary'));[moveToolBtn,rotateToolBtn,scaleToolBtn,selectOnlyBtn].forEach(b=>b.classList.remove('active'));if(mode==='translate'){transform.setMode('translate');moveModeBtn.classList.add('primary');moveToolBtn.classList.add('active');if(selected&&!objectLocked(selected)&&selected.visible)transform.attach(selected);else transform.detach()}else if(mode==='rotate'){transform.setMode('rotate');rotateModeBtn.classList.add('primary');rotateToolBtn.classList.add('active');if(selected&&!objectLocked(selected)&&selected.visible)transform.attach(selected);else transform.detach()}else if(mode==='scale'){transform.setMode('scale');scaleModeBtn.classList.add('primary');scaleToolBtn.classList.add('active');if(selected&&!objectLocked(selected)&&selected.visible)transform.attach(selected);else transform.detach()}else{selectOnlyBtn.classList.add('active');transform.detach()}}
+function deleteSelected(){if(!selected)return;pushHistory();clearSelectionAura(selected);clearEditOverlay(selected);transform.detach();scene.remove(selected);selected.geometry.dispose();selected.material.dispose();const i=objects.indexOf(selected);if(i>-1)objects.splice(i,1);selected=null;updateSelectionUI()}
+function duplicateSelected(){if(!selected)return;pushHistory();const c=selected.clone();c.geometry=selected.geometry.clone();c.material=selected.material.clone();c.position.x+=1.2;c.position.z+=.4;c.userData={...selected.userData,name:`${prettifyShape(selected.userData.shape)} ${objectCounter++}`};scene.add(c);objects.push(c);selectObject(c)}
+function clearScene(){pushHistory();clearSceneWithoutHistory()}
+function boxGap(a,b){const dx=Math.max(0,Math.max(b.min.x-a.max.x,a.min.x-b.max.x)),dy=Math.max(0,Math.max(b.min.y-a.max.y,a.min.y-b.max.y)),dz=Math.max(0,Math.max(b.min.z-a.max.z,a.min.z-b.max.z));return Math.sqrt(dx*dx+dy*dy+dz*dz)}
+function getBoxVertices(b){return[new THREE.Vector3(b.min.x,b.min.y,b.min.z),new THREE.Vector3(b.min.x,b.min.y,b.max.z),new THREE.Vector3(b.min.x,b.max.y,b.min.z),new THREE.Vector3(b.min.x,b.max.y,b.max.z),new THREE.Vector3(b.max.x,b.min.y,b.min.z),new THREE.Vector3(b.max.x,b.min.y,b.max.z),new THREE.Vector3(b.max.x,b.max.y,b.min.z),new THREE.Vector3(b.max.x,b.max.y,b.max.z)]}
+function getBoxEdges(b){const v=getBoxVertices(b);return[[v[0],v[1]],[v[0],v[2]],[v[0],v[4]],[v[3],v[1]],[v[3],v[2]],[v[3],v[7]],[v[5],v[1]],[v[5],v[4]],[v[5],v[7]],[v[6],v[2]],[v[6],v[4]],[v[6],v[7]]]}
+function closestPointOnSegment(p,a,b){const ab=b.clone().sub(a),len=ab.lengthSq();if(!len)return a.clone();const t=THREE.MathUtils.clamp(p.clone().sub(a).dot(ab)/len,0,1);return a.clone().add(ab.multiplyScalar(t))}
+function nearestBoxVertex(b,p){let best=null,d=Infinity;getBoxVertices(b).forEach(v=>{const nd=v.distanceTo(p);if(nd<d){d=nd;best=v}});return{point:best,distance:d}}
+function nearestBoxEdgePoint(b,p){let best=null,d=Infinity;getBoxEdges(b).forEach(([a,c])=>{const ep=closestPointOnSegment(p,a,c),nd=ep.distanceTo(p);if(nd<d){d=nd;best=ep}});return{point:best,distance:d}}
+function applyFaceSnapToBox(b){selectedBox.getSize(selectedSize);const half=selectedSize.clone().multiplyScalar(.5);const cs=[{axis:'x',value:b.min.x-half.x,distance:Math.abs(selectedBox.max.x-b.min.x)},{axis:'x',value:b.max.x+half.x,distance:Math.abs(selectedBox.min.x-b.max.x)},{axis:'y',value:b.min.y-half.y,distance:Math.abs(selectedBox.max.y-b.min.y)},{axis:'y',value:b.max.y+half.y,distance:Math.abs(selectedBox.min.y-b.max.y)},{axis:'z',value:b.min.z-half.z,distance:Math.abs(selectedBox.max.z-b.min.z)},{axis:'z',value:b.max.z+half.z,distance:Math.abs(selectedBox.min.z-b.max.z)}];const best=cs.sort((a,b)=>a.distance-b.distance)[0];selected.position[best.axis]=best.value}
+function applyEditSnap(){if(!selected||currentMode!=='translate')return;const mode=snapModeSelect.value;if(mode==='off')return;const threshold=Number(snapDistanceSlider.value);selectedBox.setFromObject(selected);selectedBox.getCenter(selectedCenter);selectedBox.getSize(selectedSize);let closest=null,gapMin=Infinity;objects.filter(o=>o!==selected).forEach(o=>{targetBox.setFromObject(o);const gap=boxGap(selectedBox,targetBox);if(gap<gapMin){gapMin=gap;closest=targetBox.clone()}});if(!closest||gapMin>threshold)return;if(mode==='face')applyFaceSnapToBox(closest);else if(mode==='segment'){const n=nearestBoxEdgePoint(closest,selectedCenter);if(n.point)selected.position.add(n.point.clone().sub(selectedCenter))}else if(mode==='vertex'){const n=nearestBoxVertex(closest,selectedCenter);if(n.point)selected.position.add(n.point.clone().sub(selectedCenter))}transform.updateMatrixWorld()}
+function applyRotationDegrees(save=true){if(!selected)return;if(objectLocked(selected)){updateRotationInputs();transform.detach();return}if(save)pushHistory();selected.rotation.set(degToRad(rotX.value),degToRad(rotY.value),degToRad(rotZ.value));transform.updateMatrixWorld()}
+function exportScene(){const data=objects.map(o=>({name:o.userData.name,shape:o.userData.shape,color:o.userData.color,material:o.userData.materialType,position:o.position.toArray(),rotation:[o.rotation.x,o.rotation.y,o.rotation.z],scale:o.scale.toArray(),visible:o.visible,locked:!!o.userData.locked}));const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='primitive-scene.json';a.click();URL.revokeObjectURL(url)}
+function exportOBJ(){const exportGroup=new THREE.Group();objects.forEach(obj=>{if(!obj.visible)return;const clone=obj.clone(false);clone.geometry=obj.geometry.clone();clone.material=obj.material.clone();clone.position.copy(obj.position);clone.rotation.copy(obj.rotation);clone.scale.copy(obj.scale);clone.name=obj.userData.name||obj.name||obj.userData.shape;exportGroup.add(clone)});if(exportGroup.children.length===0){alert('No visible objects to export.');return}const exporter=new OBJExporter();const objText=exporter.parse(exportGroup);const blob=new Blob([objText],{type:'text/plain'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='primitive-scene.obj';a.click();URL.revokeObjectURL(url)}
+function exportSTL(){const exportGroup=new THREE.Group();objects.forEach(obj=>{if(!obj.visible)return;const clone=obj.clone(false);clone.geometry=obj.geometry.clone();clone.material=obj.material.clone();clone.position.copy(obj.position);clone.rotation.copy(obj.rotation);clone.scale.copy(obj.scale);clone.name=obj.userData.name||obj.name||obj.userData.shape;exportGroup.add(clone)});if(exportGroup.children.length===0){alert('No visible objects to export.');return}const exporter=new STLExporter();const stlText=exporter.parse(exportGroup,{binary:false});const blob=new Blob([stlText],{type:'model/stl'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='primitive-scene.stl';a.click();URL.revokeObjectURL(url)}
+function cleanFileBaseName(file){return (file.name||'Imported object').replace(/\.[^/.]+$/,'')}
+function bakeMeshWorldTransform(mesh){mesh.updateMatrixWorld(true);const geometry=mesh.geometry.clone();geometry.applyMatrix4(mesh.matrixWorld);mesh.geometry=geometry;mesh.position.set(0,0,0);mesh.rotation.set(0,0,0);mesh.scale.set(1,1,1);mesh.updateMatrixWorld(true)}
+function prepareImportedGeometry(geometry){if(!geometry)return null;let g=geometry.index?geometry.toNonIndexed():geometry.clone();const pos=g.getAttribute('position');if(!pos||pos.count<3)return null;if(!g.getAttribute('normal'))g.computeVertexNormals();g.computeBoundingBox();g.computeBoundingSphere();return g}
+function importOBJorSTLFile(file){
+  if(!file)return;
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(ext!=='obj'&&ext!=='stl'){alert('Only OBJ and STL files are supported.');return}
+  pushHistory();
+  const reader=new FileReader();
+  reader.onerror=()=>alert('Could not read this file.');
+  reader.onload=()=>{
+    try{
+      const baseName=cleanFileBaseName(file);
+      if(ext==='obj'){
+        const loader=new OBJLoader();
+        const imported=loader.parse(reader.result);
+        imported.updateMatrixWorld(true);
+        let importedAny=false;
+        imported.traverse(child=>{
+          if(child.isMesh&&child.geometry){
+            bakeMeshWorldTransform(child);
+            const geometry=prepareImportedGeometry(child.geometry);
+            if(!geometry)return;
+            const mesh=new THREE.Mesh(geometry,createMaterial(colorPicker.value,materialSelect.value));
+            registerImportedMesh(mesh,child.name||baseName);
+            importedAny=true;
+          }
+        });
+        if(!importedAny)alert('No mesh was found in this OBJ file.');
+      }else{
+        const loader=new STLLoader();
+        const geometry=prepareImportedGeometry(loader.parse(reader.result));
+        if(!geometry){alert('No valid geometry was found in this STL file.');return}
+        const mesh=new THREE.Mesh(geometry,createMaterial(colorPicker.value,materialSelect.value));
+        registerImportedMesh(mesh,baseName);
+      }
+    }catch(err){
+      console.error(err);
+      alert('Import failed. This file may be damaged, too large for the browser, or not a valid OBJ/STL.');
+    }
+  };
+  if(ext==='stl')reader.readAsArrayBuffer(file);
+  else reader.readAsText(file);
+}
+function fitCameraToSelection(){const targetObject=selected||objects.find(o=>o.visible);if(!targetObject)return;const box=new THREE.Box3().setFromObject(targetObject);if(box.isEmpty())return;const center=new THREE.Vector3();const size=new THREE.Vector3();box.getCenter(center);box.getSize(size);const maxDim=Math.max(size.x,size.y,size.z,1);const distance=maxDim*2.8;camera.position.set(center.x+distance,center.y-distance,center.z+distance*.75);orbit.target.copy(center);camera.lookAt(center);orbit.update();updateAxisGizmo()}
+function normalizeImportedMesh(mesh){
+  const box=new THREE.Box3().setFromObject(mesh);
+  if(box.isEmpty())return;
+  const size=new THREE.Vector3();
+  const center=new THREE.Vector3();
+  box.getSize(size);
+  box.getCenter(center);
+  const maxDim=Math.max(size.x,size.y,size.z);
+  if(maxDim>0){
+    let scale=1;
+    if(maxDim>8)scale=8/maxDim;
+    if(maxDim<0.25)scale=0.25/maxDim;
+    mesh.scale.multiplyScalar(scale);
+  }
+  const box2=new THREE.Box3().setFromObject(mesh);
+  const center2=new THREE.Vector3();
+  box2.getCenter(center2);
+  mesh.position.x-=center2.x;
+  mesh.position.y-=center2.y;
+  mesh.position.z-=box2.min.z;
+}
+function updateAxisGizmo(){const cx=66,cy=50,r=42,inv=camera.quaternion.clone().invert(),axes={x:new THREE.Vector3(1,0,0),y:new THREE.Vector3(0,1,0),z:new THREE.Vector3(0,0,1)};Object.entries(axes).forEach(([k,v])=>{const vv=v.clone().applyQuaternion(inv),px=cx+vv.x*r,py=cy-vv.y*r,nx=cx-vv.x*r,ny=cy+vv.y*r,pd=axisDots[k],nd=axisDots[`n${k}`],line=axisLines[k];pd.style.left=`${px-10}px`;pd.style.top=`${py-10}px`;pd.style.opacity=vv.z>0?'1':'.45';pd.style.zIndex=vv.z>0?'3':'1';nd.style.left=`${nx-10}px`;nd.style.top=`${ny-10}px`;nd.style.opacity=vv.z<0?'.75':'.32';nd.style.zIndex=vv.z<0?'3':'1';const len=Math.hypot(px-cx,py-cy),angle=Math.atan2(py-cy,px-cx)*180/Math.PI;line.style.left=`${cx}px`;line.style.top=`${cy}px`;line.style.width=`${len}px`;line.style.transform=`rotate(${angle}deg)`;line.style.opacity=vv.z>0?'1':'.5'})}
+function setCameraView(type){if(type==='front'){camera.position.set(0,-9,2.8);viewName.textContent='Front View'}else if(type==='top'){camera.position.set(.001,.001,10);viewName.textContent='Top View'}else{camera.position.set(6,-7,5);viewName.textContent='User Perspective'}orbit.target.set(0,0,.7);camera.lookAt(orbit.target);orbit.update();updateAxisGizmo()}
+function setAxisView(axis){const d=9,h=.7,t=new THREE.Vector3(0,0,h);if(axis==='x')camera.position.set(d,.001,h);if(axis==='-x')camera.position.set(-d,.001,h);if(axis==='y')camera.position.set(.001,d,h);if(axis==='-y')camera.position.set(.001,-d,h);if(axis==='z')camera.position.set(.001,.001,d+h);if(axis==='-z')camera.position.set(.001,.001,-d+h);viewName.textContent=`${axis.toUpperCase()} Axis View`;orbit.target.copy(t);camera.lookAt(t);orbit.update();updateAxisGizmo()}
+transform.addEventListener('dragging-changed',e=>{orbit.enabled=!e.value;if(!e.value){transformHistoryLocked=false;updateRotationInputs()}});transform.addEventListener('mouseDown',()=>{if(selected&&currentMode!=='select'&&!objectLocked(selected)&&!transformHistoryLocked){pushHistory();transformHistoryLocked=true}});transform.addEventListener('objectChange',()=>{if(objectLocked(selected)){transform.detach();updateRotationInputs();return}applyEditSnap();updateRotationInputs()});renderer.domElement.addEventListener('pointermove',()=>{if(transform.dragging)applyEditSnap()});renderer.domElement.addEventListener('pointerdown',e=>{if(e.button===2||transform.dragging)return;const rect=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-rect.left)/rect.width)*2-1;pointer.y=-((e.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(objects,false);selectObject(hits.length?hits[0].object:null)});
+document.querySelectorAll('[data-shape]').forEach(b=>b.addEventListener('click',()=>addPrimitive(b.dataset.shape)));moveModeBtn.addEventListener('click',()=>setMode('translate'));rotateModeBtn.addEventListener('click',()=>setMode('rotate'));scaleModeBtn.addEventListener('click',()=>setMode('scale'));deleteObjectBtn.addEventListener('click',deleteSelected);duplicateObjectBtn.addEventListener('click',duplicateSelected);clearSceneBtn.addEventListener('click',clearScene);exportSceneBtn.addEventListener('click',exportScene);exportObjBtn.addEventListener('click',exportOBJ);exportStlBtn.addEventListener('click',exportSTL);importObjStlBtn.addEventListener('click',()=>importObjStlInput.click());importObjStlInput.addEventListener('change',e=>{importOBJorSTLFile(e.target.files[0]);e.target.value=''});viewFrontBtn.addEventListener('click',()=>setCameraView('front'));viewTopBtn.addEventListener('click',()=>setCameraView('top'));viewIsoBtn.addEventListener('click',()=>setCameraView('iso'));fitViewBtn.addEventListener('click',fitCameraToSelection);undoBtn.addEventListener('click',undoLastAction);moveToolBtn.addEventListener('click',()=>setMode('translate'));rotateToolBtn.addEventListener('click',()=>setMode('rotate'));scaleToolBtn.addEventListener('click',()=>setMode('scale'));selectOnlyBtn.addEventListener('click',()=>setMode('select'));function setSnapMode(mode){snapModeSelect.value=mode;updateSnapToolButtons()}if(snapToggleBtn)snapToggleBtn.addEventListener('click',toggleSnapMenu);snapOffToolBtn.addEventListener('click',()=>setSnapMode('off'));snapVertexToolBtn.addEventListener('click',()=>setSnapMode('vertex'));snapSegmentToolBtn.addEventListener('click',()=>setSnapMode('segment'));snapFaceToolBtn.addEventListener('click',()=>setSnapMode('face'));
+if(objectList)objectList.addEventListener('click',e=>{const row=e.target.closest('.object-row');if(!row)return;const obj=objects[Number(row.dataset.objectIndex)];if(!obj)return;const action=e.target.dataset.objectAction;if(action==='visible'){pushHistory();obj.visible=!obj.visible;if(obj===selected&&(!obj.visible||objectLocked(obj)||currentMode==='select')){transform.detach()}else if(obj===selected&&currentMode!=='select'&&!objectLocked(obj)&&obj.visible){transform.attach(obj)}updateObjectList();return}if(action==='lock'){pushHistory();obj.userData.locked=!objectLocked(obj);if(obj===selected){if(objectLocked(obj))transform.detach();else if(currentMode!=='select'&&obj.visible)transform.attach(obj)}updateObjectList();updateSelectionUI();return}selectObject(obj)});
+if(toggleAllVisibilityBtn)toggleAllVisibilityBtn.addEventListener('click',()=>{if(!objects.length)return;pushHistory();const makeVisible=!allObjectsVisible();objects.forEach(obj=>obj.visible=makeVisible);if(selected&&(!selected.visible||objectLocked(selected)||currentMode==='select')){transform.detach()}else if(selected&&currentMode!=='select'&&!objectLocked(selected)&&selected.visible){transform.attach(selected)}updateObjectList()});
+if(collectionToggle)collectionToggle.addEventListener('click',()=>{collectionCollapsed=!collectionCollapsed;updateObjectList()});
+document.querySelectorAll('.panel-collapse-btn').forEach(btn=>btn.addEventListener('click',()=>{const target=document.getElementById(btn.dataset.collapseTarget);if(!target)return;target.classList.toggle('collapsed');btn.classList.toggle('collapsed',target.classList.contains('collapsed'))}));
+document.querySelectorAll('[data-axis-view]').forEach(dot=>dot.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();setAxisView(dot.dataset.axisView)}));colorPicker.addEventListener('change',updateSelectedMaterial);materialSelect.addEventListener('change',updateSelectedMaterial);editModeSelect.addEventListener('change',()=>{updateTopEditButtons();if(selected)refreshSelectionVisuals()});topEditModeButtons.forEach(btn=>btn.addEventListener('click',()=>{editModeSelect.value=btn.dataset.topEditMode;updateTopEditButtons();if(selected)refreshSelectionVisuals()}));snapModeSelect.addEventListener('change',updateSnapToolButtons);snapDistanceSlider.addEventListener('input',()=>snapDistanceValue.textContent=Number(snapDistanceSlider.value).toFixed(2));sizeSlider.addEventListener('pointerdown',()=>{if(selected&&!objectLocked(selected))pushHistory()});sizeSlider.addEventListener('input',()=>{if(!selected)return;if(objectLocked(selected)){sizeSlider.value=selected.scale.x.toFixed(2);sizeValue.textContent=Number(sizeSlider.value).toFixed(2);return}sizeValue.textContent=Number(sizeSlider.value).toFixed(2);selected.scale.setScalar(Number(sizeSlider.value))});applyRotationBtn.addEventListener('click',()=>applyRotationDegrees(true));resetRotationBtn.addEventListener('click',()=>{if(!selected)return;if(objectLocked(selected)){updateRotationInputs();transform.detach();return}pushHistory();rotX.value=0;rotY.value=0;rotZ.value=0;applyRotationDegrees(false)});[rotX,rotY,rotZ].forEach(input=>input.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')applyRotationDegrees(true)}));
+window.addEventListener('keydown',e=>{const tag=e.target.tagName.toLowerCase();const typing=tag==='input'||tag==='select'||tag==='textarea';const k=e.key.toLowerCase();if(e.ctrlKey&&k==='z'){e.preventDefault();undoLastAction();return}if(typing)return;if(e.key==='Delete'||e.key==='Backspace')deleteSelected();if(k==='w')setMode('translate');if(k==='e')setMode('rotate');if(k==='r')setMode('scale');if(k==='q')setMode('select')});window.addEventListener('resize',()=>{const w=viewport.clientWidth,h=viewport.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)});
+addPrimitive('cube',false);addPrimitive('sphere',false);if(objects[1])objects[1].position.set(2,0,.85);selectObject(null);setMode('translate');updateSnapToolButtons();historyStack=[];function animate(){requestAnimationFrame(animate);orbit.update();updateAxisGizmo();renderer.render(scene,camera)}animate();
+</script>
+</body>
+</html>
